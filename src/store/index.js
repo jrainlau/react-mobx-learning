@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx'
+import { observable, action, reaction } from 'mobx'
 
 class Todo {
   @observable value
@@ -11,7 +11,12 @@ class Todo {
 }
 
 class TodoStore {
-  @observable todos = []
+  @observable todos = JSON.parse(localStorage.getItem('todoList')) || []
+
+  watchTodoList = reaction(
+    () => this.todos.length,
+    length => localStorage.setItem('todoList', JSON.stringify(this.todos))
+  )
 
   @action createTodo (val) {
     this.todos.push(new Todo(val))
