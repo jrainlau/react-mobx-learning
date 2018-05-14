@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { configure, observable, computed, action, runInAction } from 'mobx'
+import { configure, observable, computed, action, runInAction, reaction } from 'mobx'
 import { observer } from 'mobx-react'
 
 import ListView from './components/ListView'
@@ -24,6 +24,11 @@ export default class App extends Component {
       })
     }, 1000)
   }
+
+  watch = reaction(
+    () => this.filter,
+    filter => console.log(filter)
+  )
 
   createNew = (e) => {
     if (e.which === 13 && e.target.value) {
