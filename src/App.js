@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { configure, observable, computed, action, runInAction } from 'mobx'
 import { observer } from 'mobx-react'
 
+import { bridge } from './utils'
+
 import ListView from './components/ListView'
 
 configure({
@@ -10,9 +12,19 @@ configure({
 
 @observer
 export default class App extends Component {
-  @observable filter = ''
-  @observable time = `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
-  @computed get filteredTodos () {
+  constructor () {
+    super()
+    bridge(this)
+  }
+
+  @observable
+  $data = {
+    filter: '',
+    time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`
+  }
+
+  @computed
+  get filteredTodos () {
     const matchesFilter = new RegExp(this.filter, 'i')
     return this.props.store.todos.filter(todo => !this.filter || matchesFilter.test(todo.value))
   }

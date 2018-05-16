@@ -1,17 +1,22 @@
 import { observable, action, reaction } from 'mobx'
+import { bridge } from '../utils'
 
 class Todo {
-  @observable value
-  @observable id = new Date().getTime()
-  @observable complete = false
-
+  @observable
+  $data = {
+    value: '',
+    id: new Date().getTime(),
+    complete: false
+  }
   constructor (value) {
+    bridge(this)
     this.value = value
   }
 }
 
 class TodoStore {
-  @observable todos = JSON.parse(localStorage.getItem('todoList')) || []
+  @observable
+  todos = JSON.parse(localStorage.getItem('todoList')) || []
 
   watchTodoList = reaction(
     () => this.todos.length,
@@ -27,7 +32,7 @@ class TodoStore {
   }
 
   @action clearComplete () {
-    this.todos = this.todos.filter(todo => !todo.complete)
+    this.todos.replace(this.todos.filter(todo => !todo.complete))
   }
 }
 
